@@ -77,7 +77,7 @@ Read.SCINDA.PSN.files_SaveOnly <- function(dir.list) {
                     y = as.numeric(NA),
                     z = as.numeric(NA))
   SCN.data <- Make.tmp.dataframe()
-
+  
   Out.List.DF <- list(list(name = "name1", ds = SCN.data))
   N.Out.DF <- 1
   
@@ -110,7 +110,7 @@ Read.SCINDA.PSN.files_SaveOnly <- function(dir.list) {
   }
   DF.name <- paste0(orig.dir,"/","PSN_data_",Current.Year,"_m",Current.Month.str,".dat")
   write.table(t(colnames(SCN.data)), DF.name, col.names = F, row.names = F, quote = F, sep = "\t")
-
+  
   if (T) {
     for (N.dir in 1:Length.dir.list) {
       setwd (dir.list[N.dir])
@@ -146,7 +146,7 @@ Read.SCINDA.PSN.files_SaveOnly <- function(dir.list) {
                                 TMP.SCN.time[6],":",
                                 TMP.SCN.time[7])
               time.stamp <- as.POSIXct(strptime(tmp.str, format = "%Y-%m-%d %H:%M:%S"), tz = "GMT")
-
+              
               if ((Current.Year != TMP.SCN.time[1]) | (Current.Month != TMP.SCN.time[2])) { #opening new month file
                 Current.Year <- TMP.SCN.time[1]
                 Current.Month <- TMP.SCN.time[2]
@@ -173,13 +173,16 @@ Read.SCINDA.PSN.files_SaveOnly <- function(dir.list) {
                 TMP.SCN.data <- rep(as.numeric(NA),3)
                 SCN.data[i.tmp,1:7] <- TMP.SCN.time
                 SCN.data[i.tmp,8] <- time.stamp
-                SCN.data[i.tmp,9:11] <- TMP.SCN.data
-                i.tmp <- i.tmp+1
+                SCN.data[i.tmp,9:14] <- as.numeric(NA)
               } # end check nodata error
               
-              SCN.data[1,9:11] <- colMeans(SCN.data[,9:11], na.rm = T)
-              SCN.data[1,12:14] <- apply(SCN.data[,9:11], 2, sd, na.rm = T)
+              if (sum(is.na(SCN.data[,9])) != length(SCN.data[,9])) {
+                SCN.data[1,9:11] <- colMeans(SCN.data[,9:11], na.rm = T)
+                SCN.data[1,12:14] <- apply(SCN.data[,9:11], 2, sd, na.rm = T)
+              }
+              
               write.table(SCN.data[1,], DF.name, col.names = F, row.names = F, quote = F, sep = "\t", append = T)
+              SCN.data <- Make.tmp.dataframe()
               
             } else {# end checking for "T -20"
               print("T -20 error at...")
@@ -193,16 +196,16 @@ Read.SCINDA.PSN.files_SaveOnly <- function(dir.list) {
       } #end reading 1 file
       
     } #end dir.list
-
+    
     setwd(orig.dir)
-   }
+  }
   
   FileTemplate <- paste0("^PSN_data_")
   Input.File.Names <- list.files(pattern = FileTemplate)
   for (ff in 1:length(Input.File.Names)) {
     Data <- read.delim(Input.File.Names[ff])
     Data$time.stamp <-  as.POSIXct(strptime(Data$time.stamp, format = "%Y-%m-%d %H:%M"), tz = "GMT")
-
+    
     month <- Data$month[1]
     year <- Data$year[1]
     Full.Data <- Gaps.PSN(Data,year, month)
@@ -254,6 +257,8 @@ Read.SCINDA.PSN.files_SaveOnly <- function(dir.list) {
 
 # if all *.scn.zip files are in one folder -> un-comment following line:
 # My.folders <- "D:/SCINDA/all data"
+My.folders <- "D:/Anna Work/My Work/Data/Sun_CR/Ionosphere/SCINDA/SCN files as DAT Test"
+
 
 suppressWarnings(Read.SCINDA.PSN.files_SaveOnly(My.folders))
 
