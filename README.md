@@ -9,6 +9,9 @@ Extracting_SI_from_SCN_dat_files_v1.R
 
 Reading_psn_zip_ files_v1.R
 
+# NB: before using scripts inport to the R Environment the file "DOYall_hours_length.txt". This file contain formation
+on the names of the months and the length of the months for the leap and normal years, whic is used by scripts.
+
 ##########################################################################################################
 
 ## Reading #.scn files and extraction of TEC, S4, ROTI values with 1 min time resolution
