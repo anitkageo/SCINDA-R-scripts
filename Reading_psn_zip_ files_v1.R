@@ -208,8 +208,8 @@ Read.SCINDA.PSN.files_SaveOnly <- function(dir.list) {
     
     month <- Data$month[1]
     year <- Data$year[1]
-    Full.Data <- Gaps.PSN(Data,year, month)
-    colnames(Full.Data) <- colnames(Data)[c(8,1:7,9:14)]
+    Full.Data <- Gaps.PSN(Data[c(8,1:7,9:14)],year, month)
+    colnames(Full.Data) <- colnames(Data)
     F.name <- paste0("eqTime_",Input.File.Names[ff])
     write.table(Full.Data, F.name, col.names = T, row.names = F, quote = F, sep = "\t")
   }
@@ -257,7 +257,7 @@ Read.SCINDA.PSN.files_SaveOnly <- function(dir.list) {
 
 # if all *.scn.zip files are in one folder -> un-comment following line:
 # My.folders <- "D:/SCINDA/all data"
-My.folders <- "D:/Anna Work/My Work/Data/Sun_CR/Ionosphere/SCINDA/SCN files as DAT Test"
+My.folders <- "D:/Anna Work/My Work/Data/Sun_CR/Ionosphere/SCINDA/SCN files as DAT Test1"
 
 
 suppressWarnings(Read.SCINDA.PSN.files_SaveOnly(My.folders))
